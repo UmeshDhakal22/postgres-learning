@@ -44,20 +44,15 @@ class DatabaseMaker:
                 else:
                     project = Project(ward_name=self.ward)
             elif self.tags:
-                print('I am here')
                 existing_project = session.exec(
                     select(Project).where(Project.tag == self.tags)
                 ).first()
-                print(existing_project)
                 if existing_project:
-                    print('data is there')
                     session.close()
                     return JSONResponse(content={"message": f"Project with ward_name '{self.tags}' already exists."})
                 else:
                     project = Project(tag=self.tags)
             else:
-                print(self.bbox)
-                print(type(self.bbox))
                 existing_project = session.exec(
                     select(Project).where(Project.bboxes == self.bbox)
                 ).first()
@@ -84,11 +79,32 @@ class DatabaseMaker:
 
         with session:
             if self.ward:
-                project = ProjectAll(ward_name=self.ward)
-            elif self.bbox:
-                project = ProjectAll(bboxes=self.bbox)
+                existing_project = session.exec(
+                    select(ProjectAll).where(ProjectAll.ward_name == self.ward)
+                ).first()
+                if existing_project:
+                    session.close()
+                    return JSONResponse(content={"message": f"Project with ward_name '{self.ward}' already exists."})
+                else:
+                    project = ProjectAll(ward_name=self.ward)
+            elif self.tags:
+                existing_project = session.exec(
+                    select(ProjectAll).where(ProjectAll.tag == self.tags)
+                ).first()
+                if existing_project:
+                    session.close()
+                    return JSONResponse(content={"message": f"Project with ward_name '{self.tags}' already exists."})
+                else:
+                    project = ProjectAll(tag=self.tags)
             else:
-                project = ProjectAll(tag=self.tags)
+                existing_project = session.exec(
+                    select(ProjectAll).where(ProjectAll.bboxes == self.bbox)
+                ).first()
+                if existing_project:
+                    session.close()
+                    return JSONResponse(content={"message": f"Project with ward_name '{self.bbox}' already exists."})
+                else:
+                    project = ProjectAll(bboxes=self.bbox)
 
             session.add(project)
             session.commit()

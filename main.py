@@ -19,7 +19,7 @@ async def get_issues(
 ):
     maker = DatabaseMaker(ward=ward, bbox=bbox, tags=tags)
     try:
-        maker.create_project_table()
+        maker.create_project_table_separate()
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
